@@ -189,7 +189,7 @@ class ModernAudioPlayerRecorder:
             messagebox.showerror("Error", "No song selected. Please select an MP3 file first.")
             return
         
-        start = int(self.start_time.get()) + self.playback_position
+        start = int(self.start_time.get())
         stop = self.stop_time.get()
         
         self.audio_thread = threading.Thread(target=self.process_audio, args=(start, stop))
@@ -198,6 +198,14 @@ class ModernAudioPlayerRecorder:
         self.master.after(100, self.check_audio_thread)
         self.is_playing = True
         self.play_stop_button.config(text="Stop")
+        self.playback_position = start  # Set playback position to start time
+
+    # Update the toggle_playback method
+    def toggle_playback(self):
+        if self.is_playing:
+            self.stop_audio()
+        else:
+            self.play_audio()
 
     def process_audio(self, start, stop):
         audio = AudioSegment.from_mp3(self.file_path)
@@ -227,10 +235,20 @@ class ModernAudioPlayerRecorder:
                 pygame.mixer.music.play()
                 self.current_start_time = start_time
                 self.playback_start_time = time.time()
+                self.master.after(100, self.check_playback_status)
             else:
                 # Playback has finished
-                self.is_playing = False
-                self.play_stop_button.config(text="Play")
+                self.playback_finished()
+    def check_playback_status(self):
+        if pygame.mixer.music.get_busy():
+            self.master.after(100, self.check_playback_status)
+        else:
+            self.playback_finished()
+
+    def playback_finished(self):
+        self.is_playing = False
+        self.play_stop_button.config(text="Play")
+        self.playback_position = int(self.start_time.get())  # Reset to user-specified start time
 
     def stop_audio(self):
         if pygame.mixer.music.get_busy():
