@@ -119,3 +119,50 @@ conda deactivate
    - On Windows: Download and install FluidSynth from its official website
 
 Now you have SCAMP installed in your Conda environment!
+
+
+# PowerShell Audio Device Management Setup
+
+This section guides you through setting up PowerShell for audio device management using the AudioDeviceCmdlets module.
+
+### Enable Script Execution
+
+First, allow PowerShell to run signed scripts:
+
+```powershell
+Set-ExecutionPolicy RemoteSigned
+```
+
+This command sets the execution policy to allow local scripts and signed scripts from the internet to run. You may need administrator privileges to execute this command.
+
+### Install AudioDeviceCmdlets Module
+
+Install the AudioDeviceCmdlets module, which provides commands for managing audio devices:
+
+```powershell
+Install-Module -Name AudioDeviceCmdlets -RequiredVersion 3.0.0.4
+```
+
+This installs version 3.0.0.4 of the AudioDeviceCmdlets module. If you're prompted about installing from an untrusted repository, type 'Y' to proceed.
+
+### List Audio Devices
+
+After installation, you can list all audio devices on your system:
+
+```powershell
+Get-AudioDevice -List
+```
+
+This command displays a list of all audio devices, including playback and recording devices.
+
+### Additional Notes
+
+- Run PowerShell as an administrator when executing these commands to ensure proper permissions.
+- The AudioDeviceCmdlets module provides various commands for managing audio devices. Use `Get-Command -Module AudioDeviceCmdlets` to see all available commands.
+- For detailed help on any command, use `Get-Help [CommandName] -Detailed`. For example: `Get-Help Get-AudioDevice -Detailed`.
+
+Remember to import the module in each new PowerShell session where you want to use these commands:
+
+```powershell
+Import-Module AudioDeviceCmdlets
+```
